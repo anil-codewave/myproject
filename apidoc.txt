@@ -1,0 +1,139 @@
+
+1. User - Signup:
+-----------------
+API : http://localhost:8080/postSignup 
+
+Type : Post
+
+Format: content-type : application/json
+
+Example :
+
+{"username":"anil",
+ "email":"anil@gmail.com",
+ "password":"anil123",
+ "confirmPassword":"anil123"
+}
+
+Responses: 
+----------
+{status_code:304 , status:'failure', message:'Account with that email address already exists.'}
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:400, status:'failure', message:errors}
+{status_code:200, status:'success', user_info: userCreated}
+
+
+2. Comment - Post Comment:
+--------------------------
+API :  http://localhost:8080/api/v3/postcomment 
+
+Type : Post
+
+Format: content-type : application/json
+
+Example :
+
+{"userId":"56b792bd43616df022949f2f","commentText":"write some comments here"}
+
+Responses: 
+----------
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:401, status:'failure', message:'Invalid User Id'}
+{status_code:500, status:'failure', message:errors }
+{status_code:200, status:'success', comment_info: newCommentCreated}
+
+3. Comment - Get Comment For User:
+----------------------------------
+API :  http://localhost:8080/api/v3/getcommentForUser?userId=56b792bd43616df022949f2f 
+
+Type : Get
+
+Responses: 
+----------
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:500, status:'failure', message:errors }
+{status_code:401, status:'failure', message:'No comments found' }
+{status_code:200, status:'success', comment_info: comments}
+
+4. Comment - List All Comments:
+----------------------------------
+API :  http://localhost:8080/api/v3/listOfAllComments 
+
+Type : Get
+
+Responses: 
+----------
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:200, status:'success', comment_info: comments}
+{status_code:401, status:'failure', message:'No comments found.'}
+
+
+5. Comment - Delete Comment:
+----------------------------------
+API : http://localhost:8080/api/v3/deleteComment?commentId=56b794a443616df022949f30  
+
+Type : Get
+
+Responses: 
+----------
+{status_code:500, status:'failure', message:errors }
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:401, status:'failure', message:'Invalid comment id.' }
+{status_code:200, status:'success'}
+
+6. User - Post Login:
+----------------------------------
+API : http://localhost:8080/postLogin  
+
+Type : Post
+
+Format: content-type : application/json
+
+Example :
+
+{"email":"anil@gmail.com","password":"anil123"}
+
+Responses: 
+----------
+{status_code:401, status:'failure', message:'Unauthorized User, Email id not found.'}
+{status_code:403, status:'failure', message:'Unauthorized User, Wrong Password.'}
+{status_code:500, status:'failure', message:'Internal Server Error'}
+{status_code:400, status:'failure', message:errors}
+
+
+4. User - List All Users:
+----------------------------------
+API :  http://localhost:8080/api/v3/listOfAllUsers 
+
+Type : Get
+
+Responses: 
+----------
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:401, status:'failure', message:'No comments found.'}
+{status_code:200, status:'success', user_info: usersFound}
+
+5. User - Get User Detail:
+----------------------------------
+API :  http://localhost:8080/api/v3/getUserDetails?userId=56b792bd43616df022949f2f 
+
+Type : Get
+
+Responses: 
+----------
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:401, status:'failure', message:'Invalid User Id'}
+{status_code:200, status:'success', user_info: usersFound}
+
+6. User - Delete User (Cascading Deletion) - all comments belong to a user will be deleted:
+-------------------------------------------------------------------------------------------
+API : http://localhost:8080/api/v3/deleteUser?userId=56b792bd43616df022949f2f 
+
+Type : Get
+
+Responses: 
+----------
+{status_code:500, status:'failure', message:'Internal Server Error',Error: err}
+{status_code:500, status:'failure', message:errors }
+{status_code:401, status:'failure', message:'Invalid User Id'}
+{status_code:200, status:'success', user_info: usersFound}

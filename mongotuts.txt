@@ -1,0 +1,309 @@
+1. Open command prompt and goto 
+	//goto bin path run the mongod instance
+	C:\>MongoDB\Server\3.0\bin> mongod
+
+2. Open one more command prompt
+	//goto bin path and run the mongo shell
+	C:\>MongoDB\Server\3.0\bin> mongo
+	
+	MongoDB shell version: 3.0.3
+	connecting to: test
+
+	//to create database
+	> use test_database
+	switched to db test_database
+
+	//To find out the currently selected database:
+	>db.getName()
+
+	//To delete / drop a database, make sure you have selected the database and then do this:
+	>use test_db
+	>db.dropDatabase()
+	
+	>db.createCollection("mycollection")
+	{ "ok" : 1 }
+
+	//To see the collections in a databases:
+	>show collections
+	mycollection
+	system.indexes
+
+	OR
+
+	> db.getCollectionNames()
+
+	//In mongodb you don't need to create collection. MongoDB creates collection automatically, when you insert some document.
+	>db.createCollection("Users");
+	{ "ok" : 1 }
+
+======================================================================================================
+1.Insert docs
+======================================================================================================
+==>Insert a Document
+---------------------
+db.user.insert(
+   {
+   	 user_id : 1,
+     username: {first:'anil',last: 'kumar'},
+     age: 24,
+     gender: 'male',
+     address({permAddr: , tempAddr:}, )
+   }
+)
+
+==>Insert an Array of Documents
+-------------------------------
+//store all the docs in var called 'doc'
+>var docs = 
+[
+   {
+   	 userId : 1,
+     name:'anil',
+     age: 24,
+     gender: 'male'
+   },
+
+   {
+   	 userId : 2,
+     name:'akash',
+     age: 30,
+     gender: 'male'
+   },
+
+   {
+   	 userId : 4,
+     name:'deepak',
+     age: 35,
+     gender: 'male'
+   },
+
+   {
+   	 userId : 5,
+     name:'30',
+     age: 24,
+     gender: 'male'
+   }
+];
+
+//to print the var doc 
+>doc
+
+//to insert the doc into collection
+>db.user.insert(docs)
+
+>db.user.find()
+
+//to view in json format- use pretty()
+>db.user.find().pretty()
+
+
+==>Insert Multiple Documents with Bulk
+--------------------------------------
+//Initialize a Bulk operations builder for the collection 'user'.
+> var bulk = db.user.initializeUnorderedBulkOp();
+
+>bulk.insert(
+ 	{
+   	 userId : 100,
+     name:'karthik',
+     age: 21,
+     gender: 'male'
+   }
+);
+
+>bulk.insert(
+ 	{
+   	 userId : 120,
+     name:'Neha',
+     age: 21,
+     gender: 'female'
+   }
+);
+
+//then call the execute() method on the bulk object to execute the operations in its list.
+> bulk.execute();
+
+>db.user.find().pretty()
+
+========================================================================================================
+Query Documents
+----------------
+>db.user.find().pretty()
+
+> db.user.find({name:'anil'}).pretty()
+
+> db.user.find({userId: { $in:[1,2, 5] } } ).pretty()
+
+> db.user.find({age: { $in:[24, 30, 21] } } ).pretty()
+
+//#nin = not in 
+> db.user.find({age: { $nin:[24, 30, 21] } } ).pretty()
+
+//greater than age
+> db.user.find( { type: 'user', age: { $gt: 30 } } ).pretty() 
+
+//lesser than age 
+> db.user.find( { type: 'user', age: { $lt: 24 } } ).pretty() 
+
+//OR 
+db.user.find(
+   {
+     $or: [ { userId: { $gt: 1 } }, { age: { $gt: 30 } } ]
+   }
+).pretty()
+
+//sort by ascending order - set to -< 1 
+db.user.find().sort({age:1}).pretty()
+
+//sort by descending order - set to -< -1 
+db.user.find().sort({age:-1}).pretty()
+
+//skip 
+db.user.find().sort({age:-1}).skip(2).pretty()
+
+//limit
+db.user.find().sort({age:-1}).limit(2).pretty()
+
+//skip and limit
+db.user.find().sort({age:-1}).skip(2).limit(2).pretty()
+
+
+
+========================================================================================================
+2.update doc
+========================================================================================================
+//to add a new field to all the docs
+> db.user.update({}, { $set : { 'type' : 'user'} },{ multi:true, upsert:false} )
+
+//to remove a field in all the docs
+> db.user.update({}, { $unset : { 'type' : 'user'} },{ multi:true, upsert:false} )
+
+
+// update a particular doc
+> db.user.update({userId:1}, { $set : { 'name' : 'anilkumar'} },{ multi:false, upsert:false} )
+
+
+
+========================================================================================================
+3.remove doc
+========================================================================================================
+
+//to remove a particular doc with some condition
+> db.user.remove({userId:400})
+
+//to remove array of docs with some condition
+> db.user.remove({uesrId: { $in:[400, 401, 403] } } )
+
+> db.user.find({age: { $in:[24, 30, 21] } } )
+
+//to remove a collection
+> db.user.remove({})
+
+
+
+========================================================================================================
+var mydocuments =
+    [
+      {
+        item: "ABC2",
+        details: { model: "14Q3", manufacturer: "M1 Corporation" },
+        stock: [ { size: "M", qty: 50 } ],
+        category: "clothing"
+      },
+      {
+        item: "MNO2",
+        details: { model: "14Q3", manufacturer: "ABC Company" },
+        stock: [ { size: "S", qty: 5 }, { size: "M", qty: 5 }, { size: "L", qty: 1 } ],
+        category: "clothing"
+      },
+      {
+        item: "IJK2",
+        details: { model: "14Q2", manufacturer: "M5 Corporation" },
+        stock: [ { size: "S", qty: 5 }, { size: "L", qty: 1 } ],
+        category: "houseware"
+      }
+    ];
+
+var doc = [
+  {
+     userId : 400,
+     name:'delet',
+     age: 21,
+     gender: 'female'
+   },
+    {
+     userId : 401,
+     name:'delet',
+     age: 21,
+     gender: 'female'
+   },
+       {
+     userId : 403,
+     name:'delet',
+     age: 21,
+     gender: 'female'
+   }
+];
+db.user.insert(doc)
+
+> db.user.insert(
+...   {
+...      userId : 400,
+...      name:'delet',
+...      age: 21,
+...      gender: 'female'
+...    },
+...     {
+...      userId : 401,
+...      name:'delet',
+...      age: 21,
+...      gender: 'female'
+...    },
+...        {
+...      userId : 403,
+...      name:'delet',
+...      age: 21,
+...      gender: 'female'
+...    }
+... );
+========================================================================================================
+var docs = 
+[
+   {
+     userId : 1,
+     name:'anil',
+     age: 24,
+     gender: 'male'
+   },
+
+   {
+     userId : 2,
+     name:'akash',
+     age: 30,
+     gender: 'male'
+   }
+];
+
+db.users.insert(docs);
+
+var docs = 
+[
+  {
+    user_id : ObjectId("56c09ec2fcb8dfc21b7e7e58"),
+    commentText: 'my first comment',
+    postDate: new Date()
+  },
+
+  {
+    user_id : ObjectId("56c09ec2fcb8dfc21b7e7e59"),
+    commentText: 'my second comment',
+    postDate: new Date()
+  }
+
+];
+
+db.comments.insert(docs);
+
+db.users.find().pretty();
+
+========================================================================================================
